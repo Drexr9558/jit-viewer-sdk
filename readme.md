@@ -18,7 +18,7 @@
 
 ## ✨ 特性
 
-- 📄 **多格式支持** - PDF、DOCX、XLSX、PPTX、OFD、TXT、Markdown
+- 📄 **多格式支持** - PDF、DOCX、XLSX、PPTX、OFD、TXT、Markdown、视频、CSV（新增）
 - 🔧 **跨框架兼容** - Vue3、React、原生 HTML 无缝切换
 - 🎨 **内置工具栏** - 缩放、旋转、分页、打印、下载开箱即用
 - 🌓 **主题系统** - 浅色/深色主题，支持自定义配色
