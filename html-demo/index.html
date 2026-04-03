@@ -711,6 +711,7 @@ const viewer = JitViewer.createViewer({
   theme: 'light',            // 主题：'light' | 'dark'
   width: '100%',
   height: '600px',
+  cad: undefined,            // 可选：CAD 预览配置
   onReady: () => console.log('准备就绪'),
   onLoad: () => console.log('加载完成'),
   onError: (err) => console.error('错误:', err)
@@ -727,6 +728,7 @@ viewer.print()          // 打印文档
 viewer.download()       // 下载文档
 viewer.destroy()        // 销毁实例</code></pre>
         </div>
+        <p>CAD 说明：<code>DXF</code> 可直接预览，<code>DWG / DWF</code> 建议通过 <code>cad.previewUrl</code> 或 <code>cad.adapter</code> 接入转换结果。</p>
         
         <h3>ViewerInstance 方法</h3>
         <table class="api-table">
@@ -819,7 +821,10 @@ const defaultItems = [
       <div class="demo-container">
         <div class="demo-sidebar">
           <h3>选择文件</h3>
-          <input type="file" id="fileInput" accept=".docx,.xlsx,.xls,.pdf,.pptx,.txt,.md,.ofd">
+          <input type="file" id="fileInput" accept=".docx,.xlsx,.xls,.csv,.tsv,.pdf,.pptx,.txt,.md,.ofd,.mp4,.webm,.ogg,.ogv,.mov,.dxf,.dwg,.dwf,.dwfx,.dwt">
+          <p style="font-size: 12px; color: var(--text-secondary); margin-top: 8px;">
+            CAD 当前建议测试 <code>.dxf</code>。<code>.dwg/.dwf</code> 需要后端转换后再预览。
+          </p>
           
           <h3 style="margin-top: 24px;">或输入 URL</h3>
           <input type="text" id="urlInput" placeholder="输入文件URL">
@@ -830,6 +835,7 @@ const defaultItems = [
             <button onclick="loadDemo('pdf')">📄 PDF 示例</button>
             <button onclick="loadDemo('docx')">📝 DOCX 示例</button>
             <button onclick="loadDemo('excel')">📊 Excel 示例</button>
+            <button onclick="loadDemo('cad')">📐 CAD DXF 示例</button>
           </div>
           
           <div id="fileInfo" style="margin-top: 16px; padding-top: 16px; border-top: 1px solid var(--border); display: none;">
@@ -870,10 +876,6 @@ const defaultItems = [
     };
   </script>
   
-  <!-- 引入 JitViewer SDK (IIFE 版本，包含所有依赖) -->
-  <link rel="stylesheet" href="http://localhost:49378/iife/jit-viewer.min.css">
-  <script src="http://localhost:49378/iife/jit-viewer.min.js"></script>
-  
   <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-javascript.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-typescript.min.js"></script>
@@ -888,11 +890,125 @@ const defaultItems = [
       event.target.classList.add('active');
     }
     
+    let sdkLoaded = false;
+
+    const sdkAssetCandidates = {
+      css: [
+        '../../packages/core/dist/iife/jit-viewer.min.css',
+        '/packages/core/dist/iife/jit-viewer.min.css',
+        'https://unpkg.com/jit-viewer/dist/iife/jit-viewer.min.css'
+      ],
+      js: [
+        '../../packages/core/dist/iife/jit-viewer.min.js',
+        '/packages/core/dist/iife/jit-viewer.min.js',
+        'https://unpkg.com/jit-viewer/dist/iife/jit-viewer.min.js'
+      ]
+    };
+
+    function getSdkGlobal() {
+      return globalThis.JitViewer || window.JitViewer || null;
+    }
+
+    function loadStylesheet(href) {
+      return new Promise((resolve, reject) => {
+        const existing = document.querySelector(`link[data-sdk-href="${href}"]`);
+        if (existing) {
+          resolve(href);
+          return;
+        }
+
+        const link = document.createElement('link');
+        link.rel = 'stylesheet';
+        link.href = href;
+        link.dataset.sdkHref = href;
+        link.onload = () => resolve(href);
+        link.onerror = () => {
+          link.remove();
+          reject(new Error(`CSS load failed: ${href}`));
+        };
+        document.head.appendChild(link);
+      });
+    }
+
+    function loadScript(src) {
+      return new Promise((resolve, reject) => {
+        const existing = document.querySelector(`script[data-sdk-src="${src}"]`);
+        if (existing) {
+          if (getSdkGlobal()) {
+            resolve(src);
+            return;
+          }
+
+          existing.addEventListener('load', () => resolve(src), { once: true });
+          existing.addEventListener('error', () => reject(new Error(`Script load failed: ${src}`)), { once: true });
+          return;
+        }
+
+        const script = document.createElement('script');
+        script.src = src;
+        script.dataset.sdkSrc = src;
+        script.onload = () => {
+          if (getSdkGlobal()) {
+            resolve(src);
+            return;
+          }
+
+          reject(new Error(`SDK loaded but global JitViewer not found: ${src}`));
+        };
+        script.onerror = () => {
+          script.remove();
+          reject(new Error(`Script load failed: ${src}`));
+        };
+        document.body.appendChild(script);
+      });
+    }
+
+    async function loadFirstAvailableAsset(type) {
+      const candidates = sdkAssetCandidates[type];
+      let lastError = null;
+
+      for (const candidate of candidates) {
+        try {
+          if (type === 'css') {
+            await loadStylesheet(candidate);
+          } else {
+            await loadScript(candidate);
+          }
+          return candidate;
+        } catch (error) {
+          lastError = error;
+          console.warn('[full-demo] asset load failed:', candidate, error);
+        }
+      }
+
+      throw lastError || new Error(`No available ${type} asset`);
+    }
+
+    async function ensureSdkLoaded() {
+      if (sdkLoaded && getSdkGlobal()) {
+        return getSdkGlobal();
+      }
+
+      await Promise.all([
+        loadFirstAvailableAsset('css'),
+        loadFirstAvailableAsset('js')
+      ]);
+
+      const sdk = getSdkGlobal();
+      if (!sdk) {
+        throw new Error('JitViewer SDK 未成功加载');
+      }
+
+      sdkLoaded = true;
+      return sdk;
+    }
+
     // Demo functions
     const demoFiles = {
       pdf: 'https://mozilla.github.io/pdf.js/web/compressed.tracemonkey-pldi-09.pdf',
       docx: 'https://calibre-ebook.com/downloads/demos/demo.docx',
-      excel: 'https://go.microsoft.com/fwlink/?LinkID=521962'
+      excel: 'https://go.microsoft.com/fwlink/?LinkID=521962',
+      cad: './samples/cad-floorplan.dxf'
     };
     
     let currentViewer = null;
@@ -903,8 +1019,9 @@ const defaultItems = [
       document.getElementById('fileType').textContent = type;
     }
     
-    function initViewer(fileSource, filename) {
+    async function initViewer(fileSource, filename) {
       const container = document.getElementById('previewContainer');
+      const sdk = await ensureSdkLoaded();
       
       // 销毁之前的实例
       if (currentViewer) {
@@ -915,7 +1032,7 @@ const defaultItems = [
       container.innerHTML = '';
       
       // 使用 SDK 的 createViewer API
-      const { createViewer } = JitViewer;
+      const { createViewer } = sdk;
       
       currentViewer = createViewer({
         file: fileSource,
@@ -928,15 +1045,16 @@ const defaultItems = [
         onError: (err) => console.error('Error:', err)
       });
       
-      currentViewer.mount(container);
+      await currentViewer.mount(container);
     }
     
-    function loadDemo(type) {
+    async function loadDemo(type) {
       const url = demoFiles[type];
       if (!url) return;
       
+      const filename = type === 'cad' ? 'cad-floorplan.dxf' : `示例.${type}`;
       showFileInfo(`示例 ${type.toUpperCase()} 文件`, type);
-      initViewer(url, `示例.${type}`);
+      await initViewer(url, filename);
     }
     
     async function loadUrl() {
@@ -950,7 +1068,7 @@ const defaultItems = [
       const ext = filename.split('.').pop().toLowerCase();
       showFileInfo(filename, ext);
       
-      initViewer(url, filename);
+      await initViewer(url, filename);
     }
     
     // File input handler
@@ -960,9 +1078,7 @@ const defaultItems = [
       
       showFileInfo(file.name, file.type || file.name.split('.').pop());
       
-      // 读取为 ArrayBuffer
-      const arrayBuffer = await file.arrayBuffer();
-      initViewer(arrayBuffer, file.name);
+      await initViewer(file, file.name);
     });
     
     // Add spin animation
